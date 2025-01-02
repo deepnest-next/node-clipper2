@@ -89,22 +89,30 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Visual Studio Components
         if: ${{ contains(matrix.settings.target, 'windows') }}
+        shell: pwsh
         run: |
-          set VS_PATH=$(vswhere.exe -latest -products * -requires Microsoft.VisualStudio.Component.CoreEditor -property installationPath)
-          set DefaultInstallerPath="C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
-          set DownloadURL="https://aka.ms/vs/17/release/vs_community.exe"
+          $DefaultInstallerPath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $DownloadURL = "https://aka.ms/vs/17/release/vs_community.exe"
           
-          if (exist %DefaultInstallerPath%) (
-              echo "Visual Studio Installer found."
-              set InstallerPath=%DefaultInstallerPath%
-          ) else (
-              echo "Downloading Visual Studio Installer..."
-              powershell -Command "Invoke-WebRequest -Uri %DownloadURL% -OutFile %TEMP%\vs_community.exe"
-              set InstallerPath=%TEMP%\vs_community.exe
-          )
+          # Finde den Installationspfad von Visual Studio
+          $VS_PATH = & vswhere -latest -products * -requires Microsoft.VisualStudio.Component.CoreEditor -property installationPath
           
-          echo "InstallerPath: %InstallerPath%"
-          %InstallerPath% install --installPath "%VS_PATH%" --config ".\build.vsconfig" --quiet --wait --norestart
+          if (Test-Path $DefaultInstallerPath) {
+              Write-Host "Visual Studio Installer gefunden."
+              $InstallerPath = $DefaultInstallerPath
+          } else {
+              Write-Host "Visual Studio Installer nicht gefunden. Herunterladen..."
+              $TempInstallerPath = "$env:TEMP\vs_community.exe"
+              Invoke-WebRequest -Uri $DownloadURL -OutFile $TempInstallerPath
+              $InstallerPath = $TempInstallerPath
+          }
+          
+          Write-Host "InstallerPath: $InstallerPath"
+          Write-Host "Visual Studio Path: $VS_PATH"
+          
+          # Installiere die Komponenten gemäß der vsconfig-Datei
+          & $InstallerPath install --installPath $VS_PATH --config "./build.vsconfig" --quiet --wait --norestart
+
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: ${{ contains(matrix.settings.target, 'i686-pc-windows-msvc') }}
         with:
