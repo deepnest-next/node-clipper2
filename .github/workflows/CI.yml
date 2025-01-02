@@ -111,7 +111,9 @@ jobs:
           Write-Host "Visual Studio Path: $VS_PATH"
           
           # Installiere die Komponenten gemäß der vsconfig-Datei
-          & $InstallerPath install --installPath $VS_PATH --config "./build.vsconfig" --quiet --wait --norestart
+          $currPath = $PWD.path + "build.vsconfig"
+          & $InstallerPath install --installPath $VS_PATH --config $currPath --passive --wait --norestart --force
+          & $InstallerPath modify --installPath $VS_PATH --config $currPath --passive --wait --norestart --force
 
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: ${{ contains(matrix.settings.target, 'i686-pc-windows-msvc') }}
