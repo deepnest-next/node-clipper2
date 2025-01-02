@@ -94,7 +94,7 @@ jobs:
           set DefaultInstallerPath="C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
           set DownloadURL="https://aka.ms/vs/17/release/vs_community.exe"
           
-          if exist %DefaultInstallerPath% (
+          if (exist %DefaultInstallerPath%) (
               echo "Visual Studio Installer found."
               set InstallerPath=%DefaultInstallerPath%
           ) else (
