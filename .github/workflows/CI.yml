@@ -91,7 +91,20 @@ jobs:
         if: ${{ contains(matrix.settings.target, 'windows') }}
         run: |
           set VS_PATH=$(vswhere.exe -latest -products * -requires Microsoft.VisualStudio.Component.CoreEditor -property installationPath)
-          vs_installer.exe install --installPath "%VS_PATH%" --config ".\build.vsconfig" --quiet --wait
+          set DefaultInstallerPath="C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
+          set DownloadURL="https://aka.ms/vs/17/release/vs_community.exe"
+          
+          if exist %DefaultInstallerPath% (
+              echo "Visual Studio Installer found."
+              set InstallerPath=%DefaultInstallerPath%
+          ) else (
+              echo "Downloading Visual Studio Installer..."
+              powershell -Command "Invoke-WebRequest -Uri %DownloadURL% -OutFile %TEMP%\vs_community.exe"
+              set InstallerPath=%TEMP%\vs_community.exe
+          )
+          
+          echo "InstallerPath: %InstallerPath%"
+          %InstallerPath% install --installPath "%VS_PATH%" --config ".\build.vsconfig" --quiet --wait --norestart
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: ${{ contains(matrix.settings.target, 'i686-pc-windows-msvc') }}
         with:
