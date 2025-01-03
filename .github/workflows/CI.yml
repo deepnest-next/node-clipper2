@@ -45,7 +45,7 @@ jobs:
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine-zig
-            build: apk add --no-cache musl-dev alpine-sdk boost1.84-dev libc++-dev libstdc++ libstdc++-dev clang19 clang19-extra-tools clang19-libclang clang19-static clang19-dev && apk update && apk upgrade && apk list -I | cut -f1 -d' ' | sed -e 's/-r\d\+$//'| sed -e 's/\(.*\)-/\1 /' && yarn build --target x86_64-unknown-linux-musl
+            build: apk update && apk add musl-dev alpine-sdk boost1.84-dev libc++-dev libstdc++ libstdc++-dev clang19 clang19-extra-tools clang19-libclang clang19-static clang19-dev cmake glib libeconf libelf libintl llvm19 && apk upgrade && apk list -I | cut -f1 -d' ' | sed -e 's/-r\d\+$//'| sed -e 's/\(.*\)-/\1 /' && yarn build --target x86_64-unknown-linux-musl
           - host: macos-latest
             target: aarch64-apple-darwin
             build: yarn build --target aarch64-apple-darwin
