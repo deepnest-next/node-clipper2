@@ -71,9 +71,10 @@ jobs:
           - host: ubuntu-latest
             target: aarch64-unknown-linux-musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine-zig
+            docker_options: "--platform linux/arm64"
             build: |-
               apk update &&
-              apk add musl-dev alpine-sdk boost-dev boost1.84-dev libc++-dev libstdc++ libstdc++-dev clang19 clang19-extra-tools clang19-libclang clang19-static clang19-dev cmake glib libeconf libelf libintl llvm19 gcc-aarch64-none-elf g++-aarch64-none-elf binutils-aarch64 binutils-aarch64-none-elf &&
+              apk add musl-dev alpine-sdk boost-dev boost1.84-dev libc++-dev libstdc++ libstdc++-dev clang19 clang19-extra-tools clang19-libclang clang19-static clang19-dev cmake glib libeconf libelf libintl llvm19 &&
               apk upgrade &&
               set -e &&
               rustup target add aarch64-unknown-linux-musl &&
@@ -158,7 +159,7 @@ jobs:
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: "--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
+          options: "${{ matrix.settings.docker_options || "" }} --user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
           run: ${{ matrix.settings.build }}
       - name: Build
         run: ${{ matrix.settings.build }}
