@@ -29,11 +29,11 @@ jobs:
             target: x86_64-apple-darwin
             build: yarn build --target x86_64-apple-darwin
           - host: 
-              group: 'win_x64'
+              group: win_x64
             build: yarn build --target x86_64-pc-windows-msvc
             target: x86_64-pc-windows-msvc
           - host: 
-              group: 'win_x64'
+              group: win_x64
             build: |
               yarn build --target i686-pc-windows-msvc
               yarn test
@@ -77,7 +77,7 @@ jobs:
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl
           - host: 
-              group: 'win_x64'
+              group: win_x64
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
           - host: ubuntu-latest
@@ -117,7 +117,7 @@ jobs:
         if: ${{ !matrix.settings.docker }}
         with:
           toolchain: stable
-          targets: ${{ matrix.settings.target }}
+          target: ${{ matrix.settings.target }}
           profile: complete 
       - name: Install Rust ToolChain 2
         run: |
@@ -139,11 +139,9 @@ jobs:
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
-        shell: bash
       - name: Setup node x86
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         run: yarn config set supportedArchitectures.cpu "ia32"
-        shell: bash
       - name: Install dependencies
         run: yarn install
       - name: Setup node x86
@@ -163,7 +161,6 @@ jobs:
       - name: Build
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
-        shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
