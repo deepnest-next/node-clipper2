@@ -28,10 +28,10 @@ jobs:
           - host: macos-latest
             target: x86_64-apple-darwin
             build: yarn build --target x86_64-apple-darwin
-          - host: [self-hosted, Windows, x64]
+          - host: [self-hosted, Windows, X64]
             build: yarn build --target x86_64-pc-windows-msvc
             target: x86_64-pc-windows-msvc
-          - host: [self-hosted, Windows, x64]
+          - host: [self-hosted, Windows, X64]
             build: |
               yarn build --target i686-pc-windows-msvc
               yarn test
@@ -74,7 +74,7 @@ jobs:
               set -e &&
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl
-          - host: [self-hosted, Windows, x64]
+          - host: [self-hosted, Windows, X64]
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
           - host: ubuntu-latest
