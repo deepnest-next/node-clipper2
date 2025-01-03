@@ -28,10 +28,10 @@ jobs:
           - host: macos-latest
             target: x86_64-apple-darwin
             build: yarn build --target x86_64-apple-darwin
-          - host: windows-latest
+          - host: [self-hosted, Windows, x64]
             build: yarn build --target x86_64-pc-windows-msvc
             target: x86_64-pc-windows-msvc
-          - host: windows-latest
+          - host: [self-hosted, Windows, x64]
             build: |
               yarn build --target i686-pc-windows-msvc
               yarn test
@@ -74,7 +74,7 @@ jobs:
               set -e &&
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl
-          - host: windows-latest
+          - host: [self-hosted, Windows, x64]
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
           - host: ubuntu-latest
@@ -87,10 +87,10 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Visual Studio Components
-        if: ${{ contains(matrix.settings.target, 'windows') }}
-        shell: pwsh
-        run: ./vs2022_setup.ps1
+      # - name: Install Visual Studio Components
+      #   if: ${{ contains(matrix.settings.target, 'windows') }}
+      #   shell: pwsh
+      #   run: ./vs2022_setup.ps1
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         if: ${{ contains(matrix.settings.target, 'i686-pc-windows-msvc') }}
         with:
