@@ -109,12 +109,16 @@ jobs:
         with:
           node-version: 20
           cache: yarn
-      - name: Install
+      - name: Install Rust Toolchain
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
         with:
           toolchain: stable
           targets: ${{ matrix.settings.target }}
+          profile: complete 
+      - name: Install Rust ToolChain 2
+        run: |
+          rustup target add ${{ matrix.settings.target }}
       - name: Cache cargo
         uses: actions/cache@v4
         with:
